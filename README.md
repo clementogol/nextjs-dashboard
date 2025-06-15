@@ -124,4 +124,3 @@ A huge thank you to the Vercel, Next.js, and Supabase teams for creating and mai
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Supabase Documentation](https://supabase.com/docs)
 - [Vercel Deployment Platform](https://vercel.com)
-
