@@ -8,10 +8,9 @@
 
 This repository contains the completed project for the official **[Next.js Learn Course](https://nextjs.org/learn)**. It is a full-stack dashboard application built with the Next.js App Router, featuring data fetching, search and pagination, data mutation, and user authentication.
 
-### ✨ [View the Live Demo](https://nextjs-dashboard-omega-taupe-14.vercel.app/)
+### ✨ [View the Live Demo](https://nextjs-dashboard-omega-blond-34.vercel.app/)
 
 ![A screenshot of the Acme Dashboard, showing the main page with latest invoices and revenue charts.](./public/screenshot.png)
-*(Note: You may need to add a `screenshot.png` file to your `/public` directory for the image above to display).*
 
 ## About This Project
 
