@@ -4,7 +4,7 @@
 
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
-import { sql } from '@vercel/postgres'; // Using @vercel/postgres as per the Next.js course convention
+import { sql } from '@vercel/postgres';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
@@ -24,7 +24,6 @@ const FormSchema = z.object({
 });
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
-// ADDED: Schema for updating an invoice
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
 export type State = {
@@ -62,7 +61,7 @@ export async function createInvoice(
       INSERT INTO invoices (customer_id, amount, status, date)
       VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
     `;
-  } catch (error) {
+  } catch {
     return {
       message: 'Database Error: Failed to Create Invoice.',
     };
@@ -72,7 +71,6 @@ export async function createInvoice(
   redirect('/dashboard/invoices');
 }
 
-// ADDED: The updateInvoice server action
 export async function updateInvoice(
   id: string,
   prevState: State,
@@ -100,7 +98,7 @@ export async function updateInvoice(
       SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
       WHERE id = ${id}
     `;
-  } catch (error) {
+  } catch {
     return { message: 'Database Error: Failed to Update Invoice.' };
   }
  
@@ -108,15 +106,14 @@ export async function updateInvoice(
   redirect('/dashboard/invoices');
 }
 
-
 export async function deleteInvoice(id: string) {
-  // For consistency, added a try...catch block here as well.
   try {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
     revalidatePath('/dashboard/invoices');
-    return { message: 'Deleted Invoice.' };
-  } catch (error) {
-    return { message: 'Database Error: Failed to Delete Invoice.' };
+  } catch {
+    // redirect to an error page or throw
+    redirect('/dashboard/invoices?error=1');
+    // or throw new Error('Failed to delete');
   }
 }
 
