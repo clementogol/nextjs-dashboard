@@ -8,6 +8,19 @@ import { sql } from '@vercel/postgres';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import { formatCurrency } from './utils';
+
+// Define a type for the customer data returned from the database query.
+// Note: Aggregated fields like COUNT and SUM return as strings from the database driver.
+type CustomersTable = {
+  id: string;
+  name: string;
+  email: string;
+  image_url: string;
+  total_invoices: string;
+  total_pending: string;
+  total_paid: string;
+};
 
 const FormSchema = z.object({
   id: z.string(),
@@ -133,5 +146,40 @@ export async function authenticate(
       }
     }
     throw error;
+  }
+}
+
+export async function fetchFilteredCustomers(query: string) {
+  try {
+    // 1. Add the CustomersTable type to the sql template literal.
+    const data = await sql<CustomersTable>`
+      SELECT
+        customers.id,
+        customers.name,
+        customers.email,
+        customers.image_url,
+        COUNT(invoices.id) AS total_invoices,
+        SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
+        SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
+      FROM customers
+      LEFT JOIN invoices ON customers.id = invoices.customer_id
+      WHERE
+        customers.name ILIKE ${`%${query}%`} OR
+        customers.email ILIKE ${`%${query}%`}
+      GROUP BY customers.id, customers.name, customers.email, customers.image_url
+      ORDER BY customers.name ASC
+    `;
+
+    // 2. Access the 'rows' property on the 'data' object.
+    const customers = data.rows.map((customer) => ({
+      ...customer,
+      total_pending: formatCurrency(Number(customer.total_pending)),
+      total_paid: formatCurrency(Number(customer.total_paid)),
+    }));
+
+    return customers;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch customer table.');
   }
 }
