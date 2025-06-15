@@ -118,9 +118,7 @@ Vercel provides seamless integration with Next.js and will automatically:
 
 ## 🙏 Acknowledgements
 
-A huge thank you to the Vercel, Next.js, and Supabase teams for creating and maintaining these excellent and comprehensive open-source resources.
-
-- [Official Next.js Learn Course](https://nextjs.org/learn)
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Supabase Documentation](https://supabase.com/docs)
-- [Vercel Deployment Platform](https://vercel.com)
+A huge thank you to the Vercel and Next.js teams for creating and maintaining this excellent and comprehensive learning resource.
+- Official Next.js Learn Course
+- Next.js Documentation
+- Vercel Deployment Platform
