@@ -9,9 +9,18 @@ export const metadata: Metadata = {
   title: 'Customers',
 };
 
-export default async function Page({ searchParams }: { searchParams: any }) {
-  const resolvedSearchParams = await searchParams;
-  const query = resolvedSearchParams?.query || '';
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const resolvedParams = await searchParams;
+  const query =
+    typeof resolvedParams.query === 'string'
+      ? resolvedParams.query
+      : Array.isArray(resolvedParams.query)
+      ? resolvedParams.query[0]
+      : '';
 
   return (
     <div className="w-full">
